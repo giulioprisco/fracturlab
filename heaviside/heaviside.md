@@ -2,6 +2,8 @@
 
 This MATLAB script generates a visualization to illustrate the effect of the Riemann-Liouville fractional derivative on the Heaviside step function. The Heaviside function is defined as 0 for (x < x_0) and A for (x >= x0), where (x0 = 0) in this case. The script plots the constant portions of multiple Heaviside functions (for different amplitudes \(A\)) and overlays "rotated" tangent lines at specific points, where the rotation (slope) is determined by the fractional derivative value, highlighting how fractional calculus incorporates memory of the function's past.
 
+This script has been developed and tested with AI assistance from Grok.
+
 ## Key Parameters and Setup
 - **Fractional Order (alpha)**: Set to 0.9, which is close to 1 (the standard integer derivative).
 - **Gamma Value**: Computed as gamma(1 - alpha) for use in the fractional derivative formula.
