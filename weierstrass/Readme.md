@@ -5,6 +5,8 @@ This repository contains three MATLAB scripts for analyzing the Weierstrass func
 
 These scripts are designed for educational or research purposes in fractional calculus and fractal geometry. They assume MATLAB R2020a or later (for `exportgraphics`).
 
+These scripts have been developed and tested with AI assistance from Grok.
+
 ## Script 1: `weierstrass_fractional_derivative.m`
 ### Purpose
 Computes the Weierstrass function W(x) = sum from n=0 to N-1 of a^n * cos(b^n * pi * x) and its Riemann-Liouville fractional derivative of order alpha, D^alpha W(x) = sum from n=0 to N-1 of a^n * (b^n * pi)^alpha * cos(b^n * pi * x + alpha * pi / 2), over x in [0, 2]. Plots the function (red) and derivative (blue), saves the plot as `plot.png` (2400x1800 pixels), and exports the derivative values to `values.csv`.
