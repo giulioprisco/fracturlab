@@ -6,7 +6,7 @@ clear; clc; close all;
 
 % Parameters for Weierstrass function
 a = 0.5;          % 0 < a < 1
-b = 3;            % odd integer, ab > 1 + 3*pi/2
+b = 3;            % odd integer, ab > 1
 N = 20;           % number of terms for approximation
 alpha = 0.2;      % fractional order 0 < alpha < 1
 
