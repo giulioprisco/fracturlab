@@ -13,7 +13,7 @@ Computes the Weierstrass function W(x) = sum from n=0 to N-1 of a^n * cos(b^n * 
 
 ### Key Parameters
 - `a = 0.5`: Scaling factor (0 < a < 1).
-- `b = 3`: Frequency multiplier (integer >1; ab >1 for convergence).
+- `b = 3`: Frequency multiplier (integer >1; ab >1).
 - `N = 20`: Number of terms (increase for better approximation; e.g., 30+ for finer detail).
 - `alpha = 0.2`: Fractional order (0 < alpha < 1).
 - Domain: `x = linspace(0, 2, num_points)` (default 500000 points).
@@ -87,6 +87,13 @@ Estimates the fractal dimension of the graph of D^alpha W(x) from `values.csv` u
 - Box-counting (Script 2) at 500k points: ~1.36 (alpha=0), R^2 ≈0.999.
 - Higuchi (Script 3) at 500k points: 1.37 (alpha=0), 1.569 (alpha=0.2), R^2 ≈0.999.
 - Both methods show linear scaling in intermediate regimes, where the fractal dimension increases linearly with alpha according to the analytic formula D = D0 + alpha (with D0 ≈1.369 for the original function); this linear increase holds only in the intermediate regime of 0 ≤ alpha ≤ 2 - D0 ≈ 0.631, beyond which the dimension saturates at 2 as the graph becomes space-filling. Higuchi is more robust for self-affine curves.
+
+### Fractal edge cases (D0 close to 1)
+
+Tests with 1M points, a = 0.33334, b = 3, ab ≈ 1.00002. D0 is very close to 1 from above, so the function is almost smooth, at the edge of fractality. Alpha ranging from 0.1 to 0.9. Fractal dimension estimated via Higuchi and box-counting methods, with Higuchi showing closer agreement.
+
+The tests confirm that D ≈ D0 + alpha, with accuracy slightly decreasing as alpha approaches 0 (where D nears 1) or 1 (where D nears 2). See plots example-edge-alpha0.2(dim1.206) and example-edge-alpha0.8(dim1.808).png for alpha = 0.2 and 0.8, D = 1.206 and 1.808.
+ 
 
 ## References
 [1] M. Zähle and H. Ziezold, "Fractional Derivatives of Weierstrass-Type Functions," *Journal of Computational and Applied Mathematics*, vol. 76, pp. 265-275, 1996. [DOI: 10.1016/S0377-0427(96)00110-0](https://doi.org/10.1016/S0377-0427(96)00110-0)
