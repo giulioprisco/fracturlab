@@ -3,7 +3,7 @@ title: README
 
 ---
 
-# README
+# readme
 
 This subrepository fractalinterpretation-fbm continues the exploration of the geometrical meaning of fractional diffintegral operators and its relation with fractal geometry, started in the subrepository fractalinterpretation.
 
