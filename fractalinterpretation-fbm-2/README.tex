@@ -1,0 +1,423 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{microtype}
+\usepackage{amsmath,amssymb}
+\usepackage{xcolor}
+\usepackage{enumitem}
+\usepackage{listings}
+\usepackage[hidelinks]{hyperref}
+
+\setlength{\parskip}{0.45em}
+\setlength{\parindent}{0pt}
+\setlist[itemize]{leftmargin=1.4em,itemsep=0.2em,topsep=0.3em}
+\lstset{
+  basicstyle=\ttfamily\small,
+  backgroundcolor=\color{black!4},
+  frame=single,
+  rulecolor=\color{black!15},
+  framesep=6pt,
+  xleftmargin=4pt,
+  xrightmargin=4pt,
+  breaklines=true,
+  columns=fullflexible,
+  keepspaces=true
+}
+\makeatletter
+\def\file{\begingroup\urlstyle{tt}\def\UrlBreaks{\do\/\do\_\do\.\do\-}\Url}
+\makeatother
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\Ia}{I^{\alpha}_{0+}}
+
+\begin{document}
+
+{\LARGE\bfseries Riemann--Liouville integrals as expected local times\\[4pt]
+on fBm zero sets}
+
+\vspace{0.7em}
+{\large Repository README}
+
+\vspace{0.5em}
+v1.0, 25 November 2026
+
+\vspace{0.35em}
+\textbf{Author:} Grok Bot, with human assistance from Giulio Prisco
+
+\vspace{0.4em}
+The full paper title is \emph{Riemann--Liouville fractional integrals as expected
+local times on the zero sets of fractional Brownian motion}.
+The compiled paper is \file{paper/fractpaper.pdf}.
+
+\section*{Summary}
+
+For $0<\alpha<1$, let $B$ be a fractional Brownian motion with Hurst index
+$H=1-\alpha$, and let $\Lambda_t$ be the local time at 0 of the time-reversed
+path $s\mapsto B_{t-s}$ on $[0,t]$. The paper proves that for every Borel
+function $f$ with $\int_0^t |f(s)|(t-s)^{\alpha-1}\,ds<\infty$,
+\[
+\E\int_0^t f(s)\,\Lambda_t(ds)=\frac{\Gamma(\alpha)}{\sqrt{2\pi}}\,\Ia f(t),
+\]
+where $\Ia$ is the left-sided Riemann--Liouville integral. The proof uses the
+occupation density formula, the Gaussian law of $B_u$, and local
+nondeterminism. The identity uses fBm only through the intensity of its local
+time, and is one case of a general fact: any self-similar random measure with
+finite intensity gives, in the mean, a Riemann--Liouville integral whose order
+is its scaling index. When the measure is an exact Hausdorff measure with a
+regularly varying gauge, as for fBm zero sets, that index equals the dimension
+of the set. The result is a random-fractal reading, exact in the mean, of
+Nigmatullin's idea that fractional integration of order $\alpha$ is
+integration over a set of dimension $\alpha$. The paper also proves $L^2$ and
+almost sure convergence of the usual Gaussian-kernel approximation of local
+time, with exact bias formulas, and reports Monte Carlo experiments and a
+Lean~4 check of the deterministic part of the proof.
+
+\section*{This repository}
+
+This repository is a new version of
+\url{https://github.com/giulioprisco/fracturlab/tree/main/fractalinterpretation-fbm}.
+That earlier folder holds the 2025--2026 Gemini and Grok simulations, and an
+AI-written preprint, that first explored the idea numerically.
+
+The present paper is a complete rewrite. It adds a proof of the central
+identity, a sharper statement (including the role of time reversal and of local
+time versus Hausdorff measure), exact bias formulas, new numerics with
+nonlinear test functions and a full error budget, and a partial machine check
+in Lean~4. It is meant to be published under the name
+\file{fractalinterpretation-fbm-2}. The intended address is
+\file{https://github.com/giulioprisco/fracturlab/tree/main/fractalinterpretation-fbm-2}.
+
+\section*{Folder map}
+
+\begin{itemize}
+\item \file{README.pdf}: this note. Its source is \file{README.tex}.
+\item \file{paper/}: the compiled v1.0 paper \file{paper/fractpaper.pdf}, the
+  source \file{paper/paper.tex}, and the figures in \file{paper/figs/}.
+  Compile the source with \texttt{pdflatex} twice, from the \file{paper/}
+  folder, so that the figures and the cross-references resolve.
+\item \file{code/numerics/}: Python scripts for the new simulations, together
+  with the small result files they write (\file{results/} and
+  \file{pathwise/}) and the plots in \file{plots/}. The note for this folder is
+  \file{code/numerics/README.pdf}. The result tables from the paper run are
+  shipped as \file{results/table.pdf} and \file{results/refine_table.pdf}.
+  Run the scripts from \file{code/numerics/}, because they import \texttt{fbmlt}
+  from the working directory and use relative paths.
+\item \file{code/rerun/}: reruns and exact checks of the two earlier
+  \texttt{fracturlab} scripts. Run these from \file{code/rerun/}.
+\item \file{code/requirements.txt}: Python packages used to produce the
+  results.
+\item \file{lean/FbmCore/}: the Lean~4 project (Lean 4.37.0-rc1 and the
+  matching Mathlib release). Notes: \file{lean/README.pdf} and
+  \file{lean/FbmCore/README.pdf}.
+\item \file{reviews/claude-reports.pdf}: the six Claude referee reports,
+  combined.
+\end{itemize}
+
+\section*{The paper}
+
+The compiled paper is \file{paper/fractpaper.pdf}. The figures used in it are
+in \file{paper/figs/}. The paper source is \file{paper/paper.tex}; compile it
+with \texttt{pdflatex} twice, from the \file{paper/} folder, so that the
+figures and the cross-references resolve.
+
+\section*{Python scripts}
+
+The results in this repository were produced with Python~3.13, NumPy~2.5.5,
+SciPy~1.18.1 and Matplotlib~3.11.2. The Gemini rerun also uses the
+\texttt{fbm} package (0.3.0). Install with:
+
+\begin{lstlisting}
+python -m venv .venv
+source .venv/bin/activate
+pip install -r code/requirements.txt
+\end{lstlisting}
+
+Unless noted otherwise, commands below are run from \file{code/numerics/}.
+
+\subsection*{fbmlt.py}
+
+The shared library, not a command-line script. It provides exact fBm
+simulation by Davies--Harte circulant embedding, closed-form Riemann--Liouville
+integrals (cross-checked against adaptive quadrature with algebraic weight to
+$10^{-15}$), and exact formulae for the $\varepsilon$-smoothed and
+grid-discretised expectations of the estimator.
+
+\subsection*{run\_alpha.py}
+
+Main Monte Carlo run for one value of $\alpha$.
+
+\begin{lstlisting}
+python run_alpha.py ALPHA [N] [LOG2N] [SEED]
+\end{lstlisting}
+
+Defaults: $N=16000$, \texttt{LOG2N}${}=15$, \texttt{SEED}${}=12345$. The
+generator is initialised with \texttt{SEED}${}+1000\alpha$. The paper used
+$N=40\,000$ paths, a grid of $n=2^{15}$ steps, seed \texttt{12345}, and
+$\alpha\in\{0.2,0.3,0.4,0.5,0.6,0.8,0.9\}$, for example:
+
+\begin{lstlisting}
+python run_alpha.py 0.2 40000 15 12345
+\end{lstlisting}
+
+Output: \file{results/alpha_*.npz} (about 64~MB each).
+These files are not included; regenerate them to rebuild the main tables and
+plots from scratch.
+
+Runtime, from the paper: five processes in parallel on an 8-core machine took
+about 200~s each (about 105~s of which is fBm generation), 208~s wall time in
+total, for the first five values of $\alpha$; $\alpha=0.3$ and $\alpha=0.9$
+were added later with the same code and seed formula, about 170~s each.
+
+\subsection*{analyze.py}
+
+Reads \file{results/alpha_*.npz} and writes \file{results/table.md},
+\file{results/summary.json}, and the plots in \file{plots/}. Analysis took
+about 10~s. The table from the paper run is shipped as
+\file{results/table.pdf} (the script still writes a Markdown table if you
+rerun it). The summary and the plots are included, so you do not need the
+large \texttt{.npz} files just to read the results.
+
+\subsection*{m2\_exact.py}
+
+Exact $\E[Y_\varepsilon^2]$ for $f\equiv 1$, by two-dimensional quadrature.
+No arguments. Output (included here, about 1~s):
+\file{results/m2_smoothed_exact.json}.
+
+\subsection*{m2\_discrete.py}
+
+Exact second moment of the discrete estimator.
+\begin{lstlisting}
+python m2_discrete.py 0.2 0.3 0.4 0.5 0.6 0.8 0.9
+\end{lstlisting}
+Writes \file{results/m2_discrete_exact.json}, which is included.
+
+\subsection*{run\_refine.py}
+
+Refinement run at a finer grid and a narrower kernel.
+
+\begin{lstlisting}
+python run_refine.py ALPHA N LOG2N SEED TAG
+\end{lstlisting}
+
+The paper repeated the $\alpha=0.3$ run with $n=2^{17}$ and
+$\varepsilon=2.5\times10^{-4}$, and $N=200\,000$ new paths (four independent
+streams of 50,000), taking about 9 minutes of wall time on four cores.
+Output: \file{results/refine_<tag>.npz} (about 4~MB each,
+not included).
+
+\subsection*{analyze\_refine.py}
+
+Reads the raw refinement dumps and writes
+\file{results/refine_summary.json} and \file{results/refine_table.md}.
+The table from the paper run is shipped as
+\file{results/refine_table.pdf} (the script still writes a Markdown table if
+you rerun it). The summary is included.
+
+\subsection*{pathwise.py}
+
+Pathwise test of $L^2$ convergence, with a negative control that has the same
+one-point marginals but no local time.
+
+\begin{lstlisting}
+python pathwise.py ALPHA N STREAM
+\end{lstlisting}
+
+The paper used $N=20\,000$ paths per $\alpha$ and $n=2^{15}$. The random
+streams were spawned from a single \texttt{SeedSequence} (entropy 20261123).
+The saved runs used stream indices 0 through 6 for
+$\alpha=0.2,0.3,0.4,0.5,0.6,0.8,0.9$ in that order.
+Output: \file{pathwise/pw_*.npz} (about 5~MB each, not
+included). The whole run, including the control, took about 20 minutes on
+8 cores (about 2--5 minutes per $\alpha$).
+
+\subsection*{pathwise\_exact.py}
+
+Exact on-grid $\E[Y_a Y_b]$, hence the exact
+$\E(Y_\varepsilon-Y_{\varepsilon/2})^2$.
+
+\begin{lstlisting}
+python pathwise_exact.py 0.2 0.3 0.4 0.5 0.6 0.8 0.9
+\end{lstlisting}
+
+Writes \file{pathwise/exact_*.json} (included). About
+90~s per $\alpha$.
+
+\subsection*{pathwise\_gridfree.py}
+
+Grid-free value of the same mean-square difference, by nested quadrature
+(reliable for $\alpha\le 0.6$, as noted in \file{code/numerics/README.pdf}).
+
+\begin{lstlisting}
+python pathwise_gridfree.py 0.2 0.3 0.4 0.5 0.6 0.8 0.9
+\end{lstlisting}
+
+Writes \file{pathwise/gridfree_*.json} (included). The
+paper says the exact reference values, together with the on-grid ones, took a
+few more minutes after the pathwise Monte Carlo.
+
+\subsection*{analyze\_pathwise.py, table\_pathwise.py, plot\_pathwise.py}
+
+\file{analyze_pathwise.py} reads \file{pathwise/pw_*.npz} and writes
+\file{pathwise/summary.json}. \file{table_pathwise.py} prints the LaTeX
+table rows. \file{plot_pathwise.py} writes \file{plots/pathwise.png}.
+The summary and the plot from the paper run are included.
+
+\subsection*{check\_mean.py}
+
+Independent replicate of the $f\equiv 1$ mean test, plus low-variance
+marginal checks.
+
+\begin{lstlisting}
+python check_mean.py ALPHA N STREAM
+\end{lstlisting}
+
+Included outputs: $\alpha=0.8$, $N=80\,000$, $z=-0.05$; $\alpha=0.3$,
+$N=40\,000$, $z=+0.71$ (for the $\varepsilon=0.001$ mean).
+
+\subsection*{check\_var.py}
+
+A rough check of $\mathrm{Var}\,B_u$. It is not used in the paper.
+
+\begin{lstlisting}
+python check_var.py ALPHA N STREAM
+\end{lstlisting}
+
+\subsection*{cholesky\_check.py}
+
+Independent exact sampler, by dense Cholesky factorisation of the fBm
+covariance, with no shared code with \file{fbmlt.fbm_paths}.
+
+\begin{lstlisting}
+python cholesky_check.py ALPHA N_TOTAL BATCH [STREAM] [LOG2N]
+\end{lstlisting}
+
+\texttt{STREAM} defaults to 0 (the draft v0.5 run at $\alpha=0.8$);
+\texttt{LOG2N} defaults to 12. The paper reports runs at $n=2^{12}$ with
+$N=2\times10^6$ paths at $\alpha=0.2,0.3,0.9$ and $N=10^6$ at $\alpha=0.8$.
+The dense covariance factor is then $4096\times4096$, about 130~MB, and costs
+about 0.35~ms per path. The three later runs took about 35 minutes of compute
+on 8 cores in total. The saved files used stream 0 at $\alpha=0.8$ and
+streams 1, 2, 3 at $\alpha=0.2,0.3,0.9$.
+Output: \file{pathwise/cholesky_*.json} (included).
+At $\varepsilon=10^{-3}$ the $z$-scores are $+1.25$, $+0.20$, $+0.05$,
+$-0.37$, a combined $z$ of $+0.57$.
+
+\subsection*{cantor\_dilated.py}
+
+No arguments. Numerical check of the randomly scaled Cantor construction in
+the paper (one-dimensional quadrature of $\E M([0,u])/u^\beta$, and a Monte
+Carlo estimate of $\E[(2+X)^{-\beta}]/\log 2$). It prints the values and does
+not write a file.
+
+\subsection*{Rerun of the earlier scripts}
+
+Run these from \file{code/rerun/}.
+
+\file{gemini_run.py} reruns the earlier Gemini script ($\alpha=0.4$,
+Hosking method, 2000 steps, 1000 realizations, $\varepsilon=0.05$). It needs
+the \texttt{fbm} package. Runtime: 15~min 38~s. It writes
+\file{gemini_alpha0.4.png}.
+
+\file{gemini_expectation.py} computes the exact deterministic expectation
+of that estimator, including the rescale factor and the shape errors after
+rescaling. No Monte Carlo.
+
+\file{grok_run.py} reruns the earlier Grok script ($H=0.15$, $\alpha=0.85$,
+exact Cholesky on a non-uniform grid). The grid size was reduced from 16,384
+to 4,096, because a dense $16384^2$ Cholesky factor needed more than 8~GB.
+Runtime: 44~s at $N=4096$. It writes \file{grok_H0.15.png}. The rerun gave
+0.6992 against the exact 0.6850 (relative error 2.1\%).
+
+\file{grok_closed_form_check.py} checks the closed form printed by the
+Grok script. The closed form is the correct left-sided Riemann--Liouville
+integral of $1+t$ at $T=1$ (1.629148 both ways). The printed mismatch (0.7230
+against 0.6850) comes from comparing that left-sided integral at $T$ with the
+right-sided functional at 0. Before the constant
+$\Gamma(\alpha)(2\pi)^{-1/2}$ these are 1.629148 and 1.543403.
+
+\section*{Lean files}
+
+The project is \file{lean/FbmCore/}. It uses Lean 4.37.0-rc1 and the
+matching Mathlib release. The main file, \file{FbmCore/Basic.lean}, is about
+185 lines. Mathlib has no fractional Brownian motion and no local times, so
+the formalization covers the deterministic core and the reduction from the
+intensity of local time to the theorem, and states the fBm input as one
+labelled hypothesis (\texttt{IntensityHyp}): for every Borel set $A$,
+$\E L(A)=\int_{A\cap(0,t]} p_u(0)\,du$, with $p_u(0)$ the $N(0,u^{2H})$
+density at 0. That hypothesis is equation (4) of the paper. The existence and
+joint continuity of fBm local time, the conditional variance bound, and
+uniform integrability are not formalized.
+
+Proved, with no \texttt{sorry}:
+\begin{itemize}
+\item \texttt{gaussian\_at\_zero}: the $N(0,u^{2H})$ density at 0 equals
+  $(2\pi)^{-1/2}u^{-H}$ for $u>0$.
+\item \texttt{kernel\_reversal}: the change of variables $s=t-u$ that turns
+  the intensity integral into a left-sided Riemann--Liouville kernel.
+\item \texttt{integral\_power}, \texttt{normalized\_kernel\_mass},
+  \texttt{expected\_mass}.
+\item \texttt{det2\_mono}: the algebraic core of Step~2 of the proof (a
+  2~by~2 determinant comparison).
+\item \texttt{intensity\_eq}, \texttt{expected\_lintegral},
+  \texttt{expected\_lintegral\_reversed}, and \texttt{main\_theorem}: from the
+  intensity hypothesis to the identity for Borel $f$ with
+  $\int_0^t |(t-s)^{\alpha-1}f(s)|\,ds<\infty$.
+\end{itemize}
+
+Every theorem depends only on Lean's three standard axioms
+(\texttt{propext}, \texttt{Classical.choice}, \texttt{Quot.sound}), as
+recorded in \file{lean/FbmCore/axioms.txt}.
+
+\noindent
+\begin{minipage}{\textwidth}
+Build:
+\begin{lstlisting}
+cd lean/FbmCore
+lake exe cache get
+lake build
+lake env lean scratch/Axioms.lean
+\end{lstlisting}
+\end{minipage}
+
+\texttt{scratch/A.lean} is a working copy used during the formalization. A copy
+kept next to the paper source during drafting was identical to
+\file{FbmCore/Basic.lean} and is not duplicated here.
+
+\section*{AI referee reports}
+
+The paper went through six rounds of review by Claude (Anthropic). The
+combined reports are in \file{reviews/claude-reports.pdf}. They cover the
+earlier preprint and drafts v0.1, v0.3, v0.4, v0.5 and v0.6 (v0.2 was not
+reviewed separately). The rating rose from 5/10, with a recommendation of
+major revision, on the earlier preprint, to about 9/10 on v0.6, where the
+recommendation was accept. These are AI reports, not independent human peer
+review. The paper says so, and no human referee has yet read it.
+
+Draft v0.6 and this repository were also reviewed by Google Gemini
+(25 November 2026). That review found no mathematical issues and suggested
+minor fixes: the repository visibility wording, a measurability reference
+for Proposition 4.3, and a stale print line in \texttt{cantor\_dilated.py}.
+All of these were applied in v1.0. Gemini also wrote one of the two earlier
+exploratory scripts in the first repository.
+
+\enlargethispage{3\baselineskip}
+
+\section*{What is not included}
+
+The large Monte Carlo dumps are omitted, because each file is from about 4~MB
+to about 64~MB:
+\begin{itemize}
+\item \file{results/alpha_*.npz}, written by \texttt{run\_alpha.py}
+\item \file{results/refine_*.npz}, written by \texttt{run\_refine.py}
+\item \file{pathwise/pw_*.npz}, written by \texttt{pathwise.py}
+\end{itemize}
+Regenerate them with the commands above if you want to rebuild the tables and
+plots from the raw paths. The small JSON summaries, the result tables (as
+PDF), and the figures are included.
+
+Also omitted: earlier draft files of the paper source and of the compiled PDF,
+the one-off edit scripts, build logs, copies of the earlier
+\texttt{fracturlab} and \texttt{fractphysics} trees, venue notes, an older
+\texttt{v1\_5alpha} numerics run, and the Lean build cache (about 8~GB). After
+\texttt{lake exe cache get} and \texttt{lake build}, that cache is recreated
+locally.
+
+\end{document}

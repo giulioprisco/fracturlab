@@ -1,0 +1,7 @@
+'FbmCore.main_theorem' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FbmCore.expected_lintegral_reversed' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FbmCore.normalized_kernel_mass' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FbmCore.expected_mass' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FbmCore.det2_mono' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FbmCore.gaussian_at_zero' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FbmCore.kernel_reversal' depends on axioms: [propext, Classical.choice, Quot.sound]
